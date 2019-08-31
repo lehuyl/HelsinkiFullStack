@@ -20,7 +20,7 @@ const App = (props) => {
         {props.anecdotes[selected]}
         <div></div>
         <Button onClick={()=>countVote} text="vote"/>
-        <Button onClick={()=>setSelected(Math.floor(Math.random()*6))} text="next anecdote"/>
+        <Button onCgit lick={()=>setSelected(Math.floor(Math.random()*6))} text="next anecdote"/>
         </div>
     )
 }
