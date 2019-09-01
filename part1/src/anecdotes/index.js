@@ -47,7 +47,7 @@ const App = (props) => {
             <Button onClick={()=>updateVote(selected)} text="vote"/>
             <Button onClick={()=>setSelected(Math.floor(Math.random()*6))} text="next anecdote"/>
 
-              
+
             <h1>Anecdote with most votes</h1>
             {props.anecdotes[indexOfMax(score)]}
         </div>
