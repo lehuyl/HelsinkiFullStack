@@ -8,40 +8,72 @@ const printLanguages = (languages) => {
   return languages.map(language => <li key={language.name}>{language.name}</li>)
 }
 
+const displayCountryView = (country) => {
+  console.log(country)
+  return (
+    <div>
+      <h1>{country.name}</h1>
+      <p>capital {country.capital}</p>
+      <p>population {country.population}</p>
+
+      <h2>languages</h2>
+      <ul>
+        {printLanguages(country.languages)}
+      </ul>
+      <img src={country.flag} height="100" width="100"></img>
+      
+    </div>
+
+  )
+}
+
+// const displayCountryList = (displayFilter) => {
+//   return (
+//     displayFilter.map(country => <p key={country.name}>{country.name}</p>)
+
+//   )
+// }
+
 const DisplayCountries = ({ countries, searchValue }) => {
   const displayFilter = filteredCountries(countries, searchValue)
-  console.log('current search', searchValue)
+  // console.log('current search', searchValue)
   if (displayFilter.length >= 10) {
     return <p>Too many matches, specify another filter</p>
   } else if (isFiltered(searchValue)) {
       if (displayFilter.length > 1 && displayFilter.length < 10) {
-        return displayFilter.map(country => <p key={country.name}>{country.name}</p>)
+        console.log('new level')
+        return displayFilter.map(country => <div key={country.name}>{country.name}{showButton(country)}</div>)
       } else if (displayFilter.length === 1) {
         // console.log('suh')
         // return displayFilter.map(country => <p key={country.name}>{country.name}</p>)
         const country = displayFilter
+        return displayCountryView(country[0])
         // console.log(country)
-        console.log('country.name', country[0])
+        // console.log('country.name', country[0])
         // console.log(country[0].languages)
-        console.log(printLanguages(country[0].languages))
-        return (
-          <div>
-            <h1>{country[0].name}</h1>
-            <p>capital {country[0].capital}</p>
-            <p>population {country[0].population}</p>
+        // console.log(printLanguages(country[0].languages))
+        // return (
+        //   <div>
+        //     <h1>{country[0].name}</h1>
+        //     <p>capital {country[0].capital}</p>
+        //     <p>population {country[0].population}</p>
 
-            <h2>languages</h2>
-            <ul>
-              {printLanguages(country[0].languages)}
-            </ul>
-            <img src={country[0].flag} height="100" width="100"></img>
-          </div>
+        //     <h2>languages</h2>
+        //     <ul>
+        //       {printLanguages(country[0].languages)}
+        //     </ul>
+        //     <img src={country[0].flag} height="100" width="100"></img>
+        //   </div>
 
-        )
+        // )
       }
   } else {
     return <p>empty</p>
   }
+}
+
+const showButton = (country) => {
+  return <button type="button" onClick={() => displayCountryView(country)}>show</button>
 }
 
 const filteredCountries = (countries, searchValue) => {
@@ -75,6 +107,7 @@ const Filter = ({ search, onChange }) => {
 const App = () => {
   const [countries, setCountries] = useState([])
   const [search, setNewSearch] = useState('')
+  const [showCountry, setShowCountry] = useState('false')
 
   useEffect(() => {
     // console.log('effect')
@@ -94,7 +127,7 @@ const App = () => {
   }
 
   // const fil = countries.filter(country => country.name==='Afg')
-  console.log(countries[0])
+  // console.log(countries[0])
   // console.log('filtered:',fil)
   // console.log(countries[0])
   // console.log('render', countries.length, 'persons')
