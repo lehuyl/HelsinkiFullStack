@@ -148,6 +148,7 @@ import axios from 'axios'
 const Country = ({country})=> {
   const [showInfo, setShowInfo] = useState(false)
   const [weather, setWeather] = useState([])
+  const [error, setError] = useState(null)
 
   const toggleInfo = () => {
     setShowInfo(!showInfo)
@@ -162,6 +163,11 @@ const Country = ({country})=> {
       setWeather(response.data)
     }) 
     //if no country selected then do nothing
+    .catch(error => {
+      setError(error.response.data.message)
+      //no countries
+      setWeather([])
+    })
   }, [])
   
 
