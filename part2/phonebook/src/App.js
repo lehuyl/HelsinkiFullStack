@@ -22,14 +22,24 @@ function filterArrays(arr,searchValue){
   return showFilter
 }
 
+//full list of persons
+// const Persons = (props) => {
+//   var showFilter = filterArrays(props.persons, props.search)
+//   if(!isFiltered(props.search)){
+//     return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+//   } else {
+//     return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+//   }
+// }
 
-const Persons = (props) => {
-  var showFilter = filterArrays(props.persons, props.search[0])
-  if(!isFiltered(props.search)){
-    return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
-  } else {
-    return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
-  }
+//modularized single person
+const Person = ({person, deleteButton}) => {
+  return (
+    <div>
+      {person.name} {person.number}
+      <button onClick={deleteButton}>delete</button>
+    </div>
+  )
 }
 
 const Filter = (props) => {
@@ -140,6 +150,23 @@ const App = () => {
       }
   }
 
+  const deleteButton = (id, name) => {
+    
+    if(window.confirm(`Delete ${name} ?`)){
+      personService
+      .deletePerson(id)
+      .then(response => {
+        setError(null)
+        setPersons(persons.filter(person => person.id !== id))
+      })
+      .catch(error => {
+        setError(error.response.data.message)
+        setPersons(persons.filter(person => person.id !== id))
+      })
+    }
+    
+  }  
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -162,7 +189,16 @@ const App = () => {
                   valueNumber={newNumber} onChangeNumber={handleNumberChange}
                   onSubmit={addNameNumber}/>
       <h3>Numbers</h3>
-      <Persons search={[search, setNewSearch]} persons={persons}/>
+      {/* <Persons search={search} persons={persons}/> */}
+ 
+       { !isFiltered(search) 
+          ? (persons.map(person => (
+            <Person key={person.name} person={person} deleteButton={() => deleteButton(person.id, person.name)}/>
+          )))
+          : (persons.map(person => (
+            <Person key={person.name} person={person} deleteButton={() => deleteButton(person.id, person.name)}/>
+          )))
+        }
     </div>
   )
 }
