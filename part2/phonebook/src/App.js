@@ -105,6 +105,9 @@ const App = () => {
   }, [])
   console.log('render', persons.length, 'persons')
   
+  const findPersonID = (persons, newName) => {
+    return persons.find(person => person.name === newName).id
+  }
 
   const addNameNumber = (event) => {
       event.preventDefault()
@@ -114,7 +117,25 @@ const App = () => {
       }      
 
       if(isDuplicate(persons, newName)){
-        alert(`${newName} is already added to phonebook`)
+        // alert(`${newName} is already added to phonebook`)
+        if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+          const id = findPersonID(persons, newName)
+          personService
+            .updateNumber(id, personAdd)
+            .then(updatedPerson => {
+              setError(null)
+              const id = findPersonID(persons, newName)
+              setPersons(persons.map(person => person.id !== id ? person : updatedPerson.data))
+              setNewName('')
+              setNewNumber('')
+            })
+            .catch(error => {
+              setError(error.response.data.message)
+              setPersons(persons)
+              setNewName('')
+              setNewNumber('')
+            })
+        }
       } else {
         // axios
         //   .post('http://localhost:3001/persons', personAdd)
