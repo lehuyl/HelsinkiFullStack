@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 const isDuplicate = (persons, newName) => {
   const map = new Map();
@@ -70,14 +71,26 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setNewSearch ] = useState('')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    // axios
+    //   .get('http://localhost:3001/persons')
+    //   .then(response => {
+    //     console.log('promise fulfilled')
+    //     setError(null)
+    //     setPersons(response.data)
+    //   })
+    personService
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
+        setError(null)
         setPersons(response.data)
+      })
+      .catch(error => {
+        setError(error.response.data.message)
+        setPersons([])
       })
   }, [])
   console.log('render', persons.length, 'persons')
@@ -93,9 +106,37 @@ const App = () => {
       if(isDuplicate(persons, newName)){
         alert(`${newName} is already added to phonebook`)
       } else {
-        setPersons(persons.concat(personAdd))
-        setNewName('')
-        setNewNumber('')
+        // axios
+        //   .post('http://localhost:3001/persons', personAdd)
+        //   .then(response => {
+        //     setError(null)
+        //     setPersons(persons.concat(personAdd))
+        //     setNewName('')
+        //     setNewNumber('')
+        //   })
+        //   .catch(error => {
+        //     setError(error.response.data.message)
+        //     //if cannot add object set persons doesnt change
+        //     setPersons(persons)
+        //     setNewName('')
+        //     setNewNumber('')
+        //   })
+
+        personService
+          .create(personAdd)
+          .then(response => {
+            setError(null)
+            setPersons(persons.concat(response.data))
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(error => {
+            setError(error.response.data.message)
+            //if cannot add object set persons doesnt change
+            setPersons(persons)
+            setNewName('')
+            setNewNumber('')
+          })
       }
   }
 
