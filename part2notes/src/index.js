@@ -65,8 +65,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Note from './components/Note'
 import App from './App'
-
+import './index.css'
 import axios from 'axios'
+import Notification from './components/Notification'
 
 // axios
 //   .get('http://localhost:3001/notes')
