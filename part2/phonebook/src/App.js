@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import './index.css'
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
 
 const isDuplicate = (persons, newName) => {
   const map = new Map();
@@ -81,7 +94,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setNewSearch ] = useState('')
-  const [error, setError] = useState(null)
+  // const [error, setError] = useState("error")
+  const [errorMessage, setErrorMessage] = useState("Error...")
 
   useEffect(() => {
     console.log('effect')
@@ -95,11 +109,13 @@ const App = () => {
     personService
       .getAll()
       .then(response => {
-        setError(null)
+        // setError(null)
+        setErrorMessage(null)
         setPersons(response.data)
       })
       .catch(error => {
-        setError(error.response.data.message)
+        // setError(error.response.data.message)
+        setErrorMessage(`can't get list of persons`)
         setPersons([])
       })
   }, [])
@@ -123,14 +139,21 @@ const App = () => {
           personService
             .updateNumber(id, personAdd)
             .then(updatedPerson => {
-              setError(null)
+              // setError(null)
+              setErrorMessage(null)
               const id = findPersonID(persons, newName)
               setPersons(persons.map(person => person.id !== id ? person : updatedPerson.data))
               setNewName('')
               setNewNumber('')
             })
             .catch(error => {
-              setError(error.response.data.message)
+              // setError(error.response.data.message)
+              setErrorMessage(
+                `Information of ${newName} has already been removed from server`
+              )
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 5000)
               setPersons(persons)
               setNewName('')
               setNewNumber('')
@@ -156,13 +179,21 @@ const App = () => {
         personService
           .create(personAdd)
           .then(response => {
-            setError(null)
+            // setError(null)
+            setErrorMessage(null)
             setPersons(persons.concat(response.data))
             setNewName('')
             setNewNumber('')
+            setErrorMessage(
+              `Added ${personAdd.name}`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
           .catch(error => {
-            setError(error.response.data.message)
+            // setError(error.response.data.message)
+            setErrorMessage('Error adding person')
             //if cannot add object set persons doesnt change
             setPersons(persons)
             setNewName('')
@@ -177,11 +208,13 @@ const App = () => {
       personService
       .deletePerson(id)
       .then(response => {
-        setError(null)
+        // setError(null)
+        setErrorMessage(null)
         setPersons(persons.filter(person => person.id !== id))
       })
       .catch(error => {
-        setError(error.response.data.message)
+        // setError(error.response.data.message)
+        setErrorMessage('Unable to delete person')
         setPersons(persons.filter(person => person.id !== id))
       })
     }
@@ -204,6 +237,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter value={search} onChange={handleSearchChange} />
       <h3>add a new</h3>
       <PersonForm valueName={newName} onChangeName={handleNameChange} 
