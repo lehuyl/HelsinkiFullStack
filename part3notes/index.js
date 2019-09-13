@@ -83,6 +83,7 @@ app.get('/notes', (req, res) => {
     console.log(suh)
 })
 
+
 const PORT = 3001
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`)
