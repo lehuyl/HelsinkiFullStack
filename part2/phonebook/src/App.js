@@ -98,7 +98,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState("Error...")
 
   useEffect(() => {
-    console.log('effect')
+    // console.log('effect')
     // axios
     //   .get('http://localhost:3001/persons')
     //   .then(response => {
@@ -119,7 +119,7 @@ const App = () => {
         setPersons([])
       })
   }, [])
-  console.log('render', persons.length, 'persons')
+  // console.log('render', persons.length, 'persons')
   
   const findPersonID = (persons, newName) => {
     return persons.find(person => person.name === newName).id
