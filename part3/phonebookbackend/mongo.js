@@ -22,8 +22,7 @@ const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
     name: process.argv[3],
-    number: process.argv[4],
-    id: Math.floor(Math.random() * 100)
+    number: process.argv[4]
 })
 
 if(process.argv.length == 5){
@@ -41,22 +40,3 @@ if(process.argv.length == 3){
         mongoose.connection.close()
     })
 }
-
-
-
-// if(process.argv.length == 3){
-//     const password = process.argv[2]
-
-//     const url =
-//         `mongodb+srv://fullstack:${password}@phonebookdata-2zyut.mongodb.net/test?retryWrites=true&w=majority`
-    
-//     mongoose.connect(url, {useNewUrlParser: true})
-
-//     Person.find({}).then(result => {
-//         result.forEach(person => {
-//             console.log(person)
-//         })
-
-//         mongoose.connection.close()
-//     })
-// }
