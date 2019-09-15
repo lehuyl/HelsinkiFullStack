@@ -36,14 +36,14 @@ function filterArrays(arr,searchValue){
 }
 
 //full list of persons
-// const Persons = (props) => {
-//   var showFilter = filterArrays(props.persons, props.search)
-//   if(!isFiltered(props.search)){
-//     return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
-//   } else {
-//     return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
-//   }
-// }
+const Persons = (props) => {
+  var showFilter = filterArrays(props.persons, props.search)
+  // if(!isFiltered(props.search)){
+    return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+  // } else {
+    // return showFilter.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+  // }
+}
 
 //modularized single person
 const Person = ({person, deleteButton}) => {
@@ -98,7 +98,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState("Error...")
 
   useEffect(() => {
-    console.log('effect')
+    // console.log('effect')
     // axios
     //   .get('http://localhost:3001/persons')
     //   .then(response => {
@@ -119,7 +119,7 @@ const App = () => {
         setPersons([])
       })
   }, [])
-  console.log('render', persons.length, 'persons')
+  // console.log('render', persons.length, 'persons')
   
   const findPersonID = (persons, newName) => {
     return persons.find(person => person.name === newName).id
@@ -245,15 +245,19 @@ const App = () => {
                   onSubmit={addNameNumber}/>
       <h3>Numbers</h3>
       {/* <Persons search={search} persons={persons}/> */}
- 
-       { !isFiltered(search) 
+      {/* {console.log('filter',!isFiltered(search) )} */}
+       {/* { !isFiltered(search) 
           ? (persons.map(person => (
             <Person key={person.name} person={person} deleteButton={() => deleteButton(person.id, person.name)}/>
           )))
           : (persons.map(person => (
             <Person key={person.name} person={person} deleteButton={() => deleteButton(person.id, person.name)}/>
           )))
-        }
+        } */}
+        {filterArrays(persons, search).map(person => (
+          <Person key={person.name} person={person} deleteButton={() => deleteButton(person.id, person.name)}/>
+        ))}
+        
     </div>
   )
 }
