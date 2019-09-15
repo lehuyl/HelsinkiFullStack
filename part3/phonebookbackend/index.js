@@ -87,9 +87,11 @@ app.delete("/api/persons/:id", (request, response) => {
     //     response.status(404).send('Person not found')
     // }
 
-    Person.findByIdAndDelete(request.params.id).then(person => {
-        response.json(person.toJSON())
-    })
+    Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 
@@ -107,7 +109,8 @@ app.post("/api/persons", (request, response) => {
         })
 
         person.save().then(savedPerson => {
-            response.json(savedPerson.toJSON())
+            // morgan(':method :url :status :res[content-length] - :response-time ms')
+            response.json(savedPerson.toJSON()).status(201)
         })
     }
     // if(persons.find(person => person.name === body.name) !== undefined){
