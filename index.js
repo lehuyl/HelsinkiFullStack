@@ -5,7 +5,6 @@ const cors = require('cors')
 
 app.use(bodyParser.json())
 app.use(cors())
-app.use(express.static('build'))
 
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
@@ -46,7 +45,7 @@ const generateId = () => {
     return maxId + 1
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/notes', (request, response) => {
     const body = request.body
 
     if(!body.content){
@@ -66,14 +65,14 @@ app.post('/api/notes', (request, response) => {
     response.json(note)
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     notes = notes.filter(note => note.id !== id)
 
     response.status(204).end()
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     const note = notes.find(note => {
         return note.id === id
@@ -86,12 +85,12 @@ app.get('/api/notes/:id', (request, response) => {
     }
 })
   
-// app.get('/', (req, res) => {
-//     res.send('<h1>Hello World!</h1>')
-//     console.log(hello)
-// })
+app.get('/', (req, res) => {
+    res.send('<h1>Hello World!</h1>')
+    console.log(hello)
+})
 
-app.get('/api/notes', (req, res) => {
+app.get('/notes', (req, res) => {
     res.json(notes)
     console.log(suh)
 })
@@ -101,12 +100,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-<<<<<<< HEAD
-
-const PORT = 3001
-=======
 const PORT = process.env.PORT || 3001
->>>>>>> e8267bb031aa0720529990848e71b4e287a40d79
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`)
 })
