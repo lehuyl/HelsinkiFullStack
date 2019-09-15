@@ -8,8 +8,9 @@
     "watch": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ~/desktop/fullstack/part2notes/ && npm run build --prod && cp -r build ~/desktop/fullstack/part3notes && cd ~/desktop/fullstack/part3notes",
-    "deploy": "git push heroku-part3notes master -ff",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
+    "deploy": "git push heroku-part3notes master",
+    "deploy2": "cd ~/desktop/fullstack && git subtree push --prefix part3notes heroku-part3notes master",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy2",
     "logs:prod": "heroku logs --tail"
   },
   "author": "Steven Le",
