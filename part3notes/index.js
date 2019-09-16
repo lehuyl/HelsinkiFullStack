@@ -58,9 +58,15 @@ app.post('/api/notes', (request, response) => {
         date: new Date(),
     })
     
-    note.save().then(savedNote => {
-        response.json(savedNote.toJSON())
-    })
+    note.save()
+        // .then(savedNote => {
+        //     response.json(savedNote.toJSON())
+        // })
+        .then(savedNote => savedNote.toJSON())
+        .then(savedAndFormattedNote => {
+            response.json(savedAndFormattedNote)
+        })
+        .catch(error => next(error))
 })
 
 // app.delete('/api/notes/:id', (request, response) => {
@@ -124,8 +130,10 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
   
     if (error.name === 'CastError' && error.kind === 'ObjectId') {
-      return response.status(400).send({ error: 'malformatted id' })
-    } 
+        return response.status(400).send({ error: 'malformatted id' })
+    } else if(error.name === 'ValidationError') {
+        return response.status(400).json({error: error.message})
+    }
   
     next(error)
 }
