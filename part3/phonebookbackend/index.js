@@ -55,39 +55,25 @@ app.get("/api/persons", (request, response) => {
 app.get("/api/info", (request, response) => {
     const date = new Date()
     console.log('hi')
-    const msg = `Phone book has info for ${persons.length} people`
-    response.send(`${msg}<br><br>${date}`)
-})
 
-app.get("/api/persons/:id", (request, response) => {
-    // const id = Number(request.params.id)
-    // const person = persons.find(person => person.id === id)
-
-    //if person exists, display them
-    // if(person){
-    //     response.send(person)
-    // } else {
-    //     response.status(404).send('Not found')
-    // }
-
-    //find id from mongodb and send it to json response
-    Person.findById(request.params.id).then(person => {
-        response.json(person.toJSON())
+    // console.log(Person.collection.countDocuments('Person'))
+    Person.count({}, function(error, count){
+        const msg = `Phone book has info for ${count} people`
+        response.send(`${msg}<br><br>${date}`)
     })
 })
 
-app.delete("/api/persons/:id", (request, response) => {
-    // const id = Number(request.params.id)
-    // const filteredPersons = persons.filter(person => person.id !== id)
+app.get("/api/persons/:id", (request, response) => {
+    //find id from mongodb and send it to json response
+    Person.findById(request.params.id)
+        .then(person => {
+            response.json(person.toJSON())
+        })
+        .catch(error => next(error))
+})
 
-    // if(!(filteredPersons.length === persons.length)){
-    //     response.status(204)
-    //     response.send(filteredPersons)
-    // } else {
-    //     response.status(404).send('Person not found')
-    // }
-
-    Person.findByIdAndDelete(request.params.id)
+app.delete("/api/persons/:id", (request, response, next) => {
+    Person.findByIdAndRemove(request.params.id)
         .then(result => {
             response.status(204).end()
         })
@@ -112,25 +98,41 @@ app.post("/api/persons", (request, response) => {
             // morgan(':method :url :status :res[content-length] - :response-time ms')
             response.json(savedPerson.toJSON()).status(201)
         })
-    }
-    // if(persons.find(person => person.name === body.name) !== undefined){
-    //     response.status(400).json({
-    //         error: 'Name must be unique'
-    //     })
-    // }
-
-    // const person = {
-    //     name: body.name,
-    //     number: body.number,
-    // }
-   
-    // persons.concat(person)
-
-    // morgan(':method :url :status :res[content-length] - :response-time ms')
-    // response.json(person) 
-    
-    
+    }  
 })
+
+app.put("/api/persons/:id", (request, response, next) => {
+    const body = request.body
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+        .then(updatedPerson => {
+            response.json(updatedPerson.toJSON())
+        })
+        .catch(error => next(error))
+})
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+        return response.status(400).send({ error: 'malformatted id' })
+    } 
+    
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
