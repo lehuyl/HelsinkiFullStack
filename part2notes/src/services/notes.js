@@ -1,4 +1,8 @@
 import axios from 'axios'
+
+// const baseUrl = '/notes'
+// api backend 
+// cause app to pull for data from express backend
 const baseUrl = '/api/notes'
 
 const getAll = () => {
